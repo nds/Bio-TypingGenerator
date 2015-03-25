@@ -25,14 +25,19 @@ has 'reference_clusters'               => ( is => 'rw', isa => 'ArrayRef', lazy 
 sub _build_variation_clusters
 {
 	my($self) = @_;
-	my @clusters = uniq sort values %{$self->variation_samples_to_clusters};
+    my @values = values %{$self->variation_samples_to_clusters};
+	return [] if(@values == 0 );
+	
+	my @clusters = uniq sort @values;
 	return \@clusters;
 }
 
 sub _build_reference_clusters
 {
 	my($self) = @_;
-	my @clusters = uniq sort values %{$self->reference_samples_to_clusters};
+	my @values = values %{$self->reference_samples_to_clusters};
+	return [] if(@values == 0 );
+	my @clusters = uniq sort @values;
 	return \@clusters;
 }
 
