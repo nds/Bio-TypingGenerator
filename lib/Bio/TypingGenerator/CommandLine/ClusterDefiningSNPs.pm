@@ -54,7 +54,7 @@ sub run {
 	my $obj = Bio::TypingGenerator::SNPClusterAnalysis->new(multifasta => $self->multifasta, clusters_spreadsheet => $self->clusters_spreadsheet, clusters_column => $self->spreadsheet_column,sample_name_column => $self->sample_name_column);
     my $snps_to_unique_clusters = $obj->snps_to_unique_clusters();
 	print "Coordinate\tCluster\n";
-	for my $coord(keys %{$snps_to_unique_clusters})
+	for my $coord(sort {$a <=> $b} keys %{$snps_to_unique_clusters})
 	{
 		print $coord."\t".$snps_to_unique_clusters->{$coord}."\n";
 	}

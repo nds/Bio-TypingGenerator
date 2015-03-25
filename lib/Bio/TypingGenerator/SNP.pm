@@ -25,14 +25,18 @@ has 'reference_clusters'               => ( is => 'rw', isa => 'ArrayRef', lazy 
 sub _build_variation_clusters
 {
 	my($self) = @_;
-	my @clusters = uniq sort values %{$self->variation_samples_to_clusters};
+    my @values = values %{$self->variation_samples_to_clusters};
+	return [] if(! @values || @values == 0 );
+	my @clusters = uniq sort @values;
 	return \@clusters;
 }
 
 sub _build_reference_clusters
 {
 	my($self) = @_;
-	my @clusters = uniq sort values %{$self->reference_samples_to_clusters};
+	my @values = values %{$self->reference_samples_to_clusters};
+	return [] if(! @values || @values == 0 );
+	my @clusters = uniq sort @values;
 	return \@clusters;
 }
 
@@ -64,7 +68,14 @@ sub _build_variation_samples_to_clusters
 	{
 		unless($cells[$i] eq '.')
 		{
-			$variation_samples_to_clusters{$self->columns_to_samples->[$i-9]} = $self->samples_to_clusters->{$self->columns_to_samples->[$i-9]};
+			if(defined($self->samples_to_clusters->{$self->columns_to_samples->[$i-9]}))
+			{
+				$variation_samples_to_clusters{$self->columns_to_samples->[$i-9]} = $self->samples_to_clusters->{$self->columns_to_samples->[$i-9]};
+			}
+			else
+			{
+				print "Cant lookup ".$self->columns_to_samples->[$i-9]."\n";
+			}
 		}
 	} 
 	return \%variation_samples_to_clusters;
@@ -81,7 +92,14 @@ sub _build_reference_samples_to_clusters
 	{
 		if($cells[$i] eq '.')
 		{
-			$variation_samples_to_clusters{$self->columns_to_samples->[$i-9]} = $self->samples_to_clusters->{$self->columns_to_samples->[$i-9]};
+			if(defined($self->samples_to_clusters->{$self->columns_to_samples->[$i-9]}))
+			{
+				$variation_samples_to_clusters{$self->columns_to_samples->[$i-9]} = $self->samples_to_clusters->{$self->columns_to_samples->[$i-9]};
+			}
+			else
+			{
+			    print "Cant lookup ".$self->columns_to_samples->[$i-9]."\n";
+			}
 		}
 	} 
 	return \%variation_samples_to_clusters;
