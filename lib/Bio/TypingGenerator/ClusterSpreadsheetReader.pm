@@ -13,6 +13,7 @@ use Text::CSV;
 
 has 'filename'                => ( is => 'rw', isa => 'Str', required => 1 );
 has 'clusters_column'         => ( is => 'rw', isa => 'Int', default => 2 );
+has 'sample_name_column'      => ( is => 'rw', isa => 'Int', default => 1 );
 
 has 'clusters_to_samples'    => ( is => 'ro', isa => 'HashRef',  lazy => 1, builder => '_build_clusters_to_samples' );
 has 'samples_to_clusters'    => ( is => 'rw', isa => 'HashRef', default => sub{{}} );
@@ -35,7 +36,7 @@ sub _build_clusters_to_samples
 	
     while ( my $row = $self->_csv_parser->getline( $self->_input_spreadsheet_fh ) ) 
     {
-		my $sample_name = $row->[0];
+		my $sample_name = $row->[$self->sample_name_column];
 		my $cluster = $row->[$self->clusters_column];
 		
 		$samples_to_clusters{$sample_name} = $cluster ;

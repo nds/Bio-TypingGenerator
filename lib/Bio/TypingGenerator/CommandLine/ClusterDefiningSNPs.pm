@@ -19,6 +19,7 @@ has 'help'        => ( is => 'rw', isa => 'Bool',     default  => 0 );
 has 'multifasta'           => ( is => 'rw', isa => 'Str' );
 has 'clusters_spreadsheet' => ( is => 'rw', isa => 'Str' );
 has 'spreadsheet_column'   => ( is => 'rw', isa => 'Int', default => 2 );
+has 'sample_name_column'   => ( is => 'rw', isa => 'Int', default => 1 );
 
 has '_error_message' => ( is => 'rw', isa => 'Str' );
 
@@ -50,7 +51,7 @@ sub run {
         die $self->usage_text;
     }
     
-	my $obj = Bio::TypingGenerator::SNPClusterAnalysis->new(multifasta => $self->multifasta, clusters_spreadsheet => $self->clusters_spreadsheet, clusters_column => $self->spreadsheet_column);
+	my $obj = Bio::TypingGenerator::SNPClusterAnalysis->new(multifasta => $self->multifasta, clusters_spreadsheet => $self->clusters_spreadsheet, clusters_column => $self->spreadsheet_column,sample_name_column => $self->sample_name_column);
     my $snps_to_unique_clusters = $obj->snps_to_unique_clusters();
 	print "Coordinate\tCluster\n";
 	for my $coord(keys %{$snps_to_unique_clusters})

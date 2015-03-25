@@ -12,7 +12,7 @@ BEGIN {
 }
 
 my $obj;
-ok($obj = Bio::TypingGenerator::ClusterSpreadsheetReader->new(filename => 't/data/clusters_spreadsheet.csv') , 'initialise clusters spreadsheet');
+ok($obj = Bio::TypingGenerator::ClusterSpreadsheetReader->new(filename => 't/data/clusters_spreadsheet.csv', sample_name_column => 0) , 'initialise clusters spreadsheet');
 
 is_deeply($obj->samples_to_clusters, {
           'seq6' => '3',
