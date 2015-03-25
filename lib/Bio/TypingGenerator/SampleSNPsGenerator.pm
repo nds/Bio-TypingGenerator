@@ -11,6 +11,8 @@ Find defining snps
 use Moose;
 use Text::CSV;
 use Bio::TypingGenerator::SNP;
+use Bio::TypingGenerator::Exceptions;
+use File::Temp;
 
 has 'filename'     => ( is => 'rw', isa => 'Str', required => 1 );
 has 'exec'         => ( is => 'rw', isa => 'Str', default => 'snp_sites' );
@@ -20,16 +22,29 @@ has 'columns_to_samples'         => ( is => 'rw', isa => 'ArrayRef' );
 has 'samples_to_columns'         => ( is => 'rw', isa => 'HashRef' );
 has 'snps'                       => ( is => 'rw', isa => 'ArrayRef[Bio::TypingGenerator::SNP]', default => sub {[]} );
 
+has '_tmp_vcf_file_obj'          => ( is => 'rw', isa => 'File::Temp',lazy => 1, builder => '_build__tmp_vcf_file_obj');
+has '_vcf_filename'              => ( is => 'rw', isa => 'Str',lazy => 1, builder => '_build__vcf_filename');
+
 sub BUILD {
     my ($self) = @_;
     $self->parse_vcf;
 }
 
+sub _build__tmp_vcf_file_obj
+{
+  my($self) = @_;
+  return File::Temp->new(CLEANUP => 0);
+}
+sub  _build__vcf_filename
+{
+	my($self) = @_;
+	return $self->_tmp_vcf_file_obj->filename;
+}
 
 sub _run_snp_sites
 {
 	my($self) = @_;
-	my $cmd = $self->exec." -v -o snps.vcf ".$self->filename;
+	my $cmd = $self->exec." -v -o ".$self->_vcf_filename." ".$self->filename;
 	system($cmd);
 	return 1;
 }
@@ -37,7 +52,7 @@ sub _run_snp_sites
 sub parse_vcf
 {
 	my($self) = @_;
-	open(my $infh, 'snps.vcf' );
+	open(my $infh, $self->_vcf_filename ) or Bio::TypingGenerator::Exceptions::FileNotFound->throw(error => "Couldnt open the intermediate VCF file");
 	while(<$infh>)
 	{   
 		chomp();
@@ -59,6 +74,8 @@ sub parse_vcf
 
 		push(@{$self->snps}, Bio::TypingGenerator::SNP->new(vcf_line =>$line, columns_to_samples =>$self->columns_to_samples, samples_to_clusters => $self->samples_to_clusters));
 	}
+	
+	
 	return $self;
 }
 
