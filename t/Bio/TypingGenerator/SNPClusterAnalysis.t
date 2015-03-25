@@ -20,4 +20,9 @@ my $obj_one_snp;
 ok($obj_one_snp = Bio::TypingGenerator::SNPClusterAnalysis->new(multifasta => 't/data/one_snp.aln', clusters_spreadsheet => 't/data/clusters_spreadsheet.csv',sample_name_column => 0),'Initialise object');
 is_deeply($obj_one_snp->snps_to_unique_clusters,{ 1 => 1},'snps which uniquely define a cluster');
 
+my $obj_real_data;
+ok($obj_real_data = Bio::TypingGenerator::SNPClusterAnalysis->new(multifasta => 't/data/typhi/start.aln', clusters_spreadsheet => 't/data/typhi/small_clusters.csv',sample_name_column => 1),'Initialise object');
+is_deeply($obj_real_data->snps_to_unique_clusters,{ 2636 => 3},'snps which uniquely define a cluster');
+
+
 done_testing();
