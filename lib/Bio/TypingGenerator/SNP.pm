@@ -36,6 +36,23 @@ sub _build_reference_clusters
 	return \@clusters;
 }
 
+sub unique_cluster
+{
+  my($self) = @_;
+  if(@{$self->variation_clusters} == 1)
+  {
+    return $self->variation_clusters->[0];
+  }
+  elsif(@{$self->reference_clusters} == 1)
+  {
+  	return $self->reference_clusters->[0];
+  }
+  else
+  {
+	  return undef;
+  }  
+}
+
 sub _build_variation_samples_to_clusters
 {
 	my($self) = @_;

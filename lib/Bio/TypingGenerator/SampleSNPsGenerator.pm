@@ -16,7 +16,7 @@ use File::Temp;
 
 has 'filename'     => ( is => 'rw', isa => 'Str', required => 1 );
 has 'exec'         => ( is => 'rw', isa => 'Str', default => 'snp_sites' );
-has 'samples_to_clusters'        => ( is => 'rw', isa => 'HashRef' );
+has 'samples_to_clusters'        => ( is => 'rw', isa => 'HashRef', required =>1 );
 
 has 'columns_to_samples'         => ( is => 'rw', isa => 'ArrayRef' );
 has 'samples_to_columns'         => ( is => 'rw', isa => 'HashRef' );
@@ -27,6 +27,7 @@ has '_vcf_filename'              => ( is => 'rw', isa => 'Str',lazy => 1, builde
 
 sub BUILD {
     my ($self) = @_;
+	$self->_run_snp_sites;
     $self->parse_vcf;
 }
 

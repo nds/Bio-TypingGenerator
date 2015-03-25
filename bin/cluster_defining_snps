@@ -1,0 +1,18 @@
+#!/usr/bin/env perl
+
+package Bio::TypingGenerator::Main::ClusterDefiningSNPs;
+
+# ABSTRACT: Get a list of cluster defining SNPs
+# PODNAME: cluster_defining_snps
+
+=head1 SYNOPSIS
+
+Get a list of cluster defining SNPs
+
+=cut
+
+BEGIN { unshift( @INC, '../lib' ) }
+BEGIN { unshift( @INC, './lib' ) }
+use Bio::TypingGenerator::CommandLine::ClusterDefiningSNPs;
+
+Bio::TypingGenerator::CommandLine::ClusterDefiningSNPs->new(args => \@ARGV, script_name => $0)->run;
